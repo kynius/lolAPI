@@ -19,7 +19,7 @@ namespace lolAPI.Controllers
         public async Task<IActionResult> Get(Platforms platform,string summonerName)
         {
             var result = await _summonersService.GetSummonerByName(platform, summonerName);
-            if (!string.IsNullOrEmpty(result))
+            if (result != null)
             {
                 return Ok(result);
             }
