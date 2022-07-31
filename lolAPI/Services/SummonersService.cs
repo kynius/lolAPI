@@ -1,3 +1,4 @@
+using lolAPI.Interfaces;
 using lolAPI.Model;
 using lolAPI.Model.Enums;
 using lolAPI.Repos;
@@ -5,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace lolAPI.Services;
 
-public class SummonersService
+public class SummonersService : ISummonersService
 {
     private readonly RequestsRepo _requestsRepo;
     private readonly ServersRepo _serversRepo;
@@ -22,7 +23,11 @@ public class SummonersService
             var serverUrl = _serversRepo.PlatformRouting(platform);
             var response = await _requestsRepo.GetRequest(serverUrl,
                 String.Concat("/lol/summoner/v4/summoners/by-name/" + summonerName + token));
-            Summoner summoner = JsonConvert.DeserializeObject<Summoner>(response);
-            return summoner;
+            if (response != null)
+            {
+                Summoner? summoner = JsonConvert.DeserializeObject<Summoner>(response); 
+                return summoner;
+            }
+            return null;
     }
 }
