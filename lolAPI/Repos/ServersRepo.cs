@@ -1,7 +1,8 @@
+using lolAPI.Interfaces;
 using lolAPI.Model.Enums;
 namespace lolAPI.Repos;
 
-public class ServersRepo
+public class ServersRepo : IServersRepo
 {
     public string PlatformRouting(Platforms platform)
     {

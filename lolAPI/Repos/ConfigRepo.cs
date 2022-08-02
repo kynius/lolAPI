@@ -1,8 +1,9 @@
+using lolAPI.Interfaces;
 using lolAPI.Model;
 
 namespace lolAPI.Repos;
 
-public class ConfigRepo
+public class ConfigRepo : IConfigRepo
 {
     private IConfiguration _configuration;
 

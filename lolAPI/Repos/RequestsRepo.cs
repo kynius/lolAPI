@@ -1,4 +1,5 @@
 using lolAPI.Data;
+using lolAPI.Interfaces;
 using lolAPI.Model;
 using Microsoft.EntityFrameworkCore;
 using RestSharp;
@@ -6,7 +7,7 @@ using RestSharp.Authenticators;
 
 namespace lolAPI.Repos;
 
-public class RequestsRepo
+public class RequestsRepo : IRequestsRepo
 {
     private readonly lolAPIdb _db;
 

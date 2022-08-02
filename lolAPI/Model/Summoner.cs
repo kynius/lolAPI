@@ -14,4 +14,9 @@ public class Summoner
     public int ProfileIconId { get; set; }
     [Newtonsoft.Json.JsonProperty(PropertyName = "summonerLevel")]
     public string SummonerLevel { get; set; } = String.Empty!;
+
+    public Summoner()
+    {
+        
+    }
 }
