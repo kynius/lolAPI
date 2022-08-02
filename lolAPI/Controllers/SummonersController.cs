@@ -23,7 +23,7 @@ namespace lolAPI.Controllers
             {
                 return Ok(result);
             }
-            return NotFound();
+            return Ok();
         }
     }
 }

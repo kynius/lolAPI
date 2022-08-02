@@ -13,6 +13,9 @@ builder.Services.AddTransient<RequestsRepo>();
 builder.Services.AddTransient<ServersRepo>();
 builder.Services.AddTransient<SummonersService>();
 builder.Services.AddTransient<ConfigRepo>();
+builder.Services.AddTransient<QueueFiltersRepo>();
+builder.Services.AddTransient<MatchesService>();
+builder.Services.AddTransient<JsonRepo>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
