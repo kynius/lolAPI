@@ -5,6 +5,7 @@ namespace lolAPI.Interfaces;
 
 public interface IMatchesService
 {
-    public Task<List<string>?> GetLastMatchesId(string puuId,int? count, QueueType? queueType, QueueIds? queueIds, Regions regions );
-    public Task<Match?> GetMatchByMatchId(string matchId, Regions regions);
+    public Task<string> GetLastMatchesId(string puuId,int? count, QueueType? queueType, QueueIds? queueIds, Regions regions );
+    public Task<string?> GetMatchByMatchId(string matchId, Regions regions);
+    public Task<string> GetLastMatchesBySummonerName(Platforms platforms, string summonerName, int? count, QueueType queueType, QueueIds queueIds);
 }

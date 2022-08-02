@@ -33,4 +33,16 @@ public class MatchesController : Controller
         }
         return NotFound();
     }
+    [HttpGet("/by-summonerName/{platforms}/{summonerName}")]
+    public async Task<IActionResult> GetLastMatchesBySummonerName(Platforms platforms, string summonerName,
+        QueueType queueType, QueueIds queueIds, int? count = 20)
+    {
+        var response =
+           await _matchesService.GetLastMatchesBySummonerName(platforms, summonerName, count, queueType, queueIds);
+        if (response.Any())
+        {
+            return Ok(response);
+        }
+        return NotFound();
+    }
 }
