@@ -16,7 +16,7 @@ public class MatchesController : Controller
     [HttpGet("/by-puuid/{regions}/{puuId}")]
     public async Task<IActionResult> GetLastMatchesByPuuId(string puuId, Regions regions,QueueType? queueType, QueueIds? queueIds, int count = 10)
     {
-        var response = await _matchesService.GetLastMatchesId(puuId, count, queueType, queueIds, regions);
+        var response = await _matchesService.GetLastMatchesId(puuId, count, regions, queueType, queueIds);
         if (response != null)
         {
             return Ok(response);
@@ -35,7 +35,7 @@ public class MatchesController : Controller
     }
     [HttpGet("/by-summonerName/{platforms}/{summonerName}")]
     public async Task<IActionResult> GetLastMatchesBySummonerName(Platforms platforms, string summonerName,
-        QueueType queueType, QueueIds queueIds, int? count = 20)
+        QueueType? queueType = null, QueueIds? queueIds = null, int? count = 20)
     {
         var response =
            await _matchesService.GetLastMatchesBySummonerName(platforms, summonerName, count, queueType, queueIds);

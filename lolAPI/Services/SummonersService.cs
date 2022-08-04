@@ -19,12 +19,23 @@ public class SummonersService : ISummonersService
     {
             var serverUrl = _serversRepo.PlatformRouting(platform);
             var requestUrl = String.Concat("/lol/summoner/v4/summoners/by-name/" + summonerName);
-            var response = await _requestsRepo.GetRequest(serverUrl, requestUrl
-                );
+            var response = await _requestsRepo.GetRequest(serverUrl, requestUrl);
             if (response != null)
             {
                 return _jsonRepo.FormatResponse(response);
             }
             return null;
+    }
+
+    public async Task<string?> GetChampionMasteryBySummonerId(Platforms platforms,string summonerId)
+    {
+        var serverUrl = _serversRepo.PlatformRouting(platforms);
+        var requestUrl = String.Concat("/lol/champion-mastery/v4/champion-masteries/by-summoner/" + summonerId);
+        var response = await _requestsRepo.GetRequest(serverUrl, requestUrl);
+        if (response != null)
+        {
+            return _jsonRepo.FormatResponse(response);
+        }
+        return null;
     }
 }
