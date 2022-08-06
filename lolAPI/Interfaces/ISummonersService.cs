@@ -8,4 +8,5 @@ public interface ISummonersService
 {
     public Task<string?> GetSummonerByName(Platforms platform, string summonerName);
     public Task<string?> GetChampionMasteryBySummonerId(Platforms platforms, string summonerId);
+    public Task<string?> GetSummonerRankBySummonerId(Platforms platforms, string summonerId);
 }

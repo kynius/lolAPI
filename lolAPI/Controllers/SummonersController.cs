@@ -36,6 +36,16 @@ namespace lolAPI.Controllers
             }
 
             return NotFound();
+        }[HttpGet("/champion-ranks/{platforms}/{summonerId}")]
+        public async Task<IActionResult> GetSummonerRanks(Platforms platforms, string summonerId)
+        {
+            var result = await _summonersService.GetSummonerRankBySummonerId(platforms, summonerId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return NotFound();
         }
     }
 }
