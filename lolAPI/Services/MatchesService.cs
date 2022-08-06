@@ -23,7 +23,7 @@ public class MatchesService : IMatchesService
         _jsonRepo = jsonRepo;
         _summonersService = summonersService;
     }
-    public async Task<string> GetLastMatchesId(string puuId,int? count, QueueType? queueType, QueueIds? queueIds, Regions regions)
+    public async Task<string> GetLastMatchesId(string puuId,int? count, Regions regions, QueueType? queueType = null, QueueIds? queueIds = null)
     {
         var baseUrl = _servers.RegionsRouting(regions);
         string? countUrl = null;
@@ -56,11 +56,11 @@ public class MatchesService : IMatchesService
         var response = await _requests.GetRequest(baseUrl, requestUrl);
         if (response != null)
         {
-            return _jsonRepo.FormatResponse(response);
+            return response;
         }
         return null;
     }
-    public async Task<string> GetLastMatchesBySummonerName(Platforms platforms, string summonerName, int? count, QueueType queueType, QueueIds queueIds)
+    public async Task<string> GetLastMatchesBySummonerName(Platforms platforms, string summonerName, int? count, QueueType? queueType = null, QueueIds? queueIds = null)
     {
         var response = new JObject();
         var region = Regions.EUROPE;
@@ -74,14 +74,15 @@ public class MatchesService : IMatchesService
         }
         var user = await _summonersService.GetSummonerByName(platforms, summonerName);
         var data = JObject.Parse(user);
-        string matchList = await GetLastMatchesId(data.GetValue("puuid").ToString(), count, queueType, queueIds,  region);
+        string matchList = await GetLastMatchesId(data.GetValue("puuid").ToString(), count, region, queueType, queueIds);
         response.Add(new JProperty("summoner", data));
+        var matches = new JArray();
         var matchesIds = JsonConvert.DeserializeObject<List<string>>(matchList);
         foreach (var m in matchesIds)
         { 
-           response.Add(new JProperty(await GetMatchByMatchId(m, region))); 
+           matches.Add( JsonConvert.DeserializeObject(await GetMatchByMatchId(m, region)));
         }
-
-        return JsonConvert.SerializeObject(response);
+        response.Add(new JProperty("matches", matches));
+        return JsonConvert.SerializeObject(response, Formatting.Indented);
     }
 }

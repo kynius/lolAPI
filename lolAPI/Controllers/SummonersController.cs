@@ -15,15 +15,37 @@ namespace lolAPI.Controllers
             _summonersService = summonersService;
         }
         
-        [HttpGet("{platform}/{summonerName}")]
-        public async Task<IActionResult> Get(Platforms platform,string summonerName)
+        [HttpGet("{platforms}/{summonerName}")]
+        public async Task<IActionResult> GetSummoner(Platforms platforms,string summonerName)
         {
-            var result = await _summonersService.GetSummonerByName(platform, summonerName);
+            var result = await _summonersService.GetSummonerByName(platforms, summonerName);
             if (result != null)
             {
                 return Ok(result);
             }
-            return Ok();
+            return NotFound();
+        }
+
+        [HttpGet("/champion-mastery/{platforms}/{summonerId}")]
+        public async Task<IActionResult> GetChampionMastery(Platforms platforms, string summonerId)
+        {
+            var result = await _summonersService.GetChampionMasteryBySummonerId(platforms, summonerId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return NotFound();
+        }[HttpGet("/champion-ranks/{platforms}/{summonerId}")]
+        public async Task<IActionResult> GetSummonerRanks(Platforms platforms, string summonerId)
+        {
+            var result = await _summonersService.GetSummonerRankBySummonerId(platforms, summonerId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return NotFound();
         }
     }
 }
