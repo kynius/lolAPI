@@ -38,6 +38,7 @@ public class RequestsRepo : IRequestsRepo
             var request = new RestRequest(requestUrl);
             request.AddHeader("Accept", "application/json");
             request.AddHeader("X-Riot-Token", token);
+            request.AddHeader("Access-Control-Allow-Origin", "*");
             var response = await client.GetAsync(request);
             if (response.IsSuccessful)
             {
@@ -55,5 +56,39 @@ public class RequestsRepo : IRequestsRepo
             }
         }
         return null;
+    }
+
+    public async Task<string?> GetMatchRequest(string baseUrl, string requestUrl)
+    {
+        var token = _config.GetConfig().ApiToken;
+        var url = string.Concat(baseUrl + requestUrl);
+        var requestFromDb = await _db.Request.FirstOrDefaultAsync(x => x.Url == url);
+        if (requestFromDb != null)
+        {
+            return requestFromDb.Json;
+        }
+        else
+        {
+            var client = new RestClient(baseUrl);
+            var request = new RestRequest(requestUrl);
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("X-Riot-Token", token);
+            var response = await client.GetAsync(request);
+            if (response.IsSuccessful)
+            {
+                if (response.Content != null)
+                {
+                    await _db.Request.AddAsync(new Request
+                    {
+                        DateCreated = DateTime.Now,
+                        Json = response.Content,
+                        Url = string.Concat(baseUrl + requestUrl)
+                    });
+                    await _db.SaveChangesAsync();
+                    return response.Content;
+                }
+            }
+            return null;
+        }
     }
 }
