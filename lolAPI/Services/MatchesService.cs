@@ -53,7 +53,7 @@ public class MatchesService : IMatchesService
     {
         var baseUrl = _servers.RegionsRouting(regions);
         var requestUrl = string.Concat("/lol/match/v5/matches/", matchId);
-        var response = await _requests.GetRequest(baseUrl, requestUrl);
+        var response = await _requests.GetMatchRequest(baseUrl, requestUrl);
         if (response != null)
         {
             return response;
