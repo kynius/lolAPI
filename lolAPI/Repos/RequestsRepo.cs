@@ -38,6 +38,7 @@ public class RequestsRepo : IRequestsRepo
             var request = new RestRequest(requestUrl);
             request.AddHeader("Accept", "application/json");
             request.AddHeader("X-Riot-Token", token);
+            request.AddHeader("Access-Control-Allow-Origin", "*");
             var response = await client.GetAsync(request);
             if (response.IsSuccessful)
             {
