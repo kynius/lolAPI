@@ -45,4 +45,15 @@ public class MatchesController : Controller
         }
         return NotFound();
     }
+    [HttpGet("/live-game/by-summonerName/{platforms}/{summonerName}")]
+    public async Task<IActionResult> GetLiveGameByUserName(Platforms platforms, string summonerName)
+    {
+        var response =
+            await _matchesService.GetActiveMatchBySummonerName(platforms, summonerName);
+        if (response != null)
+        {
+            return Ok(response);
+        }
+        return NotFound();
+    }
 }

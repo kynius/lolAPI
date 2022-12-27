@@ -85,4 +85,22 @@ public class MatchesService : IMatchesService
         response.Add(new JProperty("matches", matches));
         return JsonConvert.SerializeObject(response, Formatting.Indented);
     }
+
+    public async Task<string?> GetActiveMatchBySummonerName(Platforms platforms, string summonerName)
+    {
+        var baseURl = _servers.PlatformRouting(platforms);
+        var user = await _summonersService.GetSummonerByName(platforms, summonerName);
+        var data = JObject.Parse(user);
+        var requestUrl =
+            string.Concat("/lol/spectator/v4/active-games/by-summoner/", data.GetValue("id").ToString());
+        var response = await _requests.GetRequest(baseURl, requestUrl);
+        if (response != null)
+        {
+            return _jsonRepo.FormatResponse(response);
+        }
+        else
+        {
+            return null;
+        }
+    }
 }
