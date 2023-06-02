@@ -14,13 +14,15 @@ public class ConfigRepo : IConfigRepo
 
     public Config GetConfig()
     {
-        if (_configuration.GetSection("MyConfig").GetSection("ApiToken").Value != null &&
-            _configuration.GetSection("MyConfig").GetSection("AppName").Value != null)
+        var apiToken = _configuration.GetSection("MyConfig").GetSection("ApiToken").Value;
+        var appName = _configuration.GetSection("MyConfig").GetSection("AppName").Value;
+        if (apiToken != null &&
+            appName != null)
         {
             return new Config
             {
-                ApiToken = _configuration.GetSection("MyConfig").GetSection("ApiToken").Value,
-                AppName = _configuration.GetSection("MyConfig").GetSection("AppName").Value
+                ApiToken = apiToken,
+                AppName = appName
             };
         }
         return new Config();

@@ -1,4 +1,5 @@
 using lolAPI.Data;
+using lolAPI.Interfaces;
 using lolAPI.Repos;
 using lolAPI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -9,13 +10,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<lolAPIdb>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("lolAPIdb") ?? string.Empty));
-builder.Services.AddTransient<RequestsRepo>();
-builder.Services.AddTransient<ServersRepo>();
-builder.Services.AddTransient<SummonersService>();
-builder.Services.AddTransient<ConfigRepo>();
-builder.Services.AddTransient<QueueFiltersRepo>();
-builder.Services.AddTransient<MatchesService>();
-builder.Services.AddTransient<JsonRepo>();
+builder.Services.AddTransient<IRequestsRepo,RequestsRepo>();
+builder.Services.AddTransient<IServersRepo,ServersRepo>();
+builder.Services.AddTransient<ISummonersService,SummonersService>();
+builder.Services.AddTransient<IConfigRepo,ConfigRepo>();
+builder.Services.AddTransient<IQueueFiltersRepo,QueueFiltersRepo>();
+builder.Services.AddTransient<IMatchesService,MatchesService>();
+builder.Services.AddTransient<IJsonRepo,JsonRepo>();
 builder.Services.AddCors();
 var app = builder.Build();
 

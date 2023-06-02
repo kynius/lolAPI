@@ -9,13 +9,13 @@ namespace lolAPI.Services;
 
 public class MatchesService : IMatchesService
 {
-    private readonly ServersRepo _servers;
-    private readonly RequestsRepo _requests;
-    private readonly QueueFiltersRepo _queueFilters;
-    private readonly JsonRepo _jsonRepo;
-    private readonly SummonersService _summonersService;
+    private readonly IServersRepo _servers;
+    private readonly IRequestsRepo _requests;
+    private readonly IQueueFiltersRepo _queueFilters;
+    private readonly IJsonRepo _jsonRepo;
+    private readonly ISummonersService _summonersService;
 
-    public MatchesService(ServersRepo servers, RequestsRepo requests,QueueFiltersRepo queueFilters, JsonRepo jsonRepo, SummonersService summonersService)
+    public MatchesService(IServersRepo servers, IRequestsRepo requests,IQueueFiltersRepo queueFilters, IJsonRepo jsonRepo, ISummonersService summonersService)
     {
         _servers = servers;
         _requests = requests;
@@ -23,7 +23,7 @@ public class MatchesService : IMatchesService
         _jsonRepo = jsonRepo;
         _summonersService = summonersService;
     }
-    public async Task<string> GetLastMatchesId(string puuId,int? count, Regions regions, QueueType? queueType = null, QueueIds? queueIds = null)
+    public async Task<string?> GetLastMatchesId(string puuId,int? count, Regions regions, QueueType? queueType = null, QueueIds? queueIds = null)
     {
         var baseUrl = _servers.RegionsRouting(regions);
         string? countUrl = null;
@@ -42,11 +42,7 @@ public class MatchesService : IMatchesService
         }
         var requestUrl = String.Concat("/lol/match/v5/matches/by-puuid/" + puuId + "/ids" + "?" + countUrl + queueTypeUrl);
         var response = await _requests.GetRequest(baseUrl, requestUrl);
-        if (response != null)
-        {
-            return _jsonRepo.FormatResponse(response);
-        }
-        return null;
+        return response != null ? _jsonRepo.FormatResponse(response) : null;
     }
 
     public async Task<string?> GetMatchByMatchId(string matchId, Regions regions)
@@ -54,11 +50,7 @@ public class MatchesService : IMatchesService
         var baseUrl = _servers.RegionsRouting(regions);
         var requestUrl = string.Concat("/lol/match/v5/matches/", matchId);
         var response = await _requests.GetMatchRequest(baseUrl, requestUrl);
-        if (response != null)
-        {
-            return response;
-        }
-        return null;
+        return response ?? null;
     }
     public async Task<string> GetLastMatchesBySummonerName(Platforms platforms, string summonerName, int? count, QueueType? queueType = null, QueueIds? queueIds = null)
     {
@@ -73,16 +65,33 @@ public class MatchesService : IMatchesService
             region = Regions.ASIA;
         }
         var user = await _summonersService.GetSummonerByName(platforms, summonerName);
-        var data = JObject.Parse(user);
-        string matchList = await GetLastMatchesId(data.GetValue("puuid").ToString(), count, region, queueType, queueIds);
-        response.Add(new JProperty("summoner", data));
-        var matches = new JArray();
-        var matchesIds = JsonConvert.DeserializeObject<List<string>>(matchList);
-        foreach (var m in matchesIds)
-        { 
-           matches.Add( JsonConvert.DeserializeObject(await GetMatchByMatchId(m, region)));
+        if (user != null)
+        {
+            var data = JObject.Parse(user);
+            var puuId = data.GetValue("puuid");
+            if (puuId != null)
+            {
+                var matchList = await GetLastMatchesId(puuId.ToString(), count, region, queueType, queueIds);
+                if (matchList != null)
+                {
+                    response.Add(new JProperty("summoner", data));
+                    var matches = new JArray();
+                    var matchesIds = JsonConvert.DeserializeObject<List<string>>(matchList);
+                    if (matchesIds != null && matchesIds.Any())
+                    {
+                        foreach (var m in matchesIds)
+                        {
+                            var match = await GetMatchByMatchId(m, region);
+                            if (match != null)
+                            {
+                                matches.Add(JsonConvert.DeserializeObject(match));
+                            }
+                        }
+                        response.Add(new JProperty("matches", matches));
+                    }
+                }
+            }
         }
-        response.Add(new JProperty("matches", matches));
         return JsonConvert.SerializeObject(response, Formatting.Indented);
     }
 
@@ -90,17 +99,18 @@ public class MatchesService : IMatchesService
     {
         var baseURl = _servers.PlatformRouting(platforms);
         var user = await _summonersService.GetSummonerByName(platforms, summonerName);
-        var data = JObject.Parse(user);
-        var requestUrl =
-            string.Concat("/lol/spectator/v4/active-games/by-summoner/", data.GetValue("id").ToString());
-        var response = await _requests.GetRequest(baseURl, requestUrl);
-        if (response != null)
+        if (user != null)
         {
-            return _jsonRepo.FormatResponse(response);
+            var data = JObject.Parse(user);
+            var id = data.GetValue("id");
+            if (id != null)
+            {
+                var requestUrl =
+                    string.Concat("/lol/spectator/v4/active-games/by-summoner/", id.ToString());
+                var response = await _requests.GetRequest(baseURl, requestUrl);
+                return response != null ? _jsonRepo.FormatResponse(response) : null;
+            }
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 }

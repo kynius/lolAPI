@@ -10,9 +10,9 @@ namespace lolAPI.Repos;
 public class RequestsRepo : IRequestsRepo
 {
     private readonly lolAPIdb _db;
-    private readonly ConfigRepo _config;
+    private readonly IConfigRepo _config;
 
-    public RequestsRepo(lolAPIdb db, ConfigRepo config)
+    public RequestsRepo(lolAPIdb db, IConfigRepo config)
     {
         _db = db;
         _config = config;

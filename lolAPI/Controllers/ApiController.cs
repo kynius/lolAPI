@@ -5,4 +5,5 @@ namespace lolAPI.Controllers;
 [Route("[controller]")]
 public class ApiController : ControllerBase
 {
+    
 }

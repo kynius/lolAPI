@@ -7,10 +7,10 @@ namespace lolAPI.Services;
 
 public class SummonersService : ISummonersService
 {
-    private readonly RequestsRepo _requestsRepo;
-    private readonly ServersRepo _serversRepo;
-    private readonly JsonRepo _jsonRepo;
-    public SummonersService(RequestsRepo requestsRepo, ServersRepo serversRepo, ConfigRepo configRepo, JsonRepo jsonRepo)
+    private readonly IRequestsRepo _requestsRepo;
+    private readonly IServersRepo _serversRepo;
+    private readonly IJsonRepo _jsonRepo;
+    public SummonersService(IRequestsRepo requestsRepo, IServersRepo serversRepo, IJsonRepo jsonRepo)
     {
         _requestsRepo = requestsRepo;
         _serversRepo = serversRepo;

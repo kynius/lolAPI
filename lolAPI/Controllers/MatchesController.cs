@@ -1,14 +1,14 @@
+using lolAPI.Interfaces;
 using lolAPI.Model.Enums;
-using lolAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace lolAPI.Controllers;
 
 public class MatchesController : Controller
 {
-    private readonly MatchesService _matchesService;
+    private readonly IMatchesService _matchesService;
 
-    public MatchesController(MatchesService matchesService)
+    public MatchesController(IMatchesService matchesService)
     {
         _matchesService = matchesService;
     }

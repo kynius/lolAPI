@@ -1,5 +1,5 @@
+using lolAPI.Interfaces;
 using lolAPI.Model.Enums;
-using lolAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace lolAPI.Controllers
@@ -8,9 +8,9 @@ namespace lolAPI.Controllers
  
     public class SummonersController : ApiController
     {
-        private readonly SummonersService _summonersService;
+        private readonly ISummonersService _summonersService;
 
-        public SummonersController(SummonersService summonersService)
+        public SummonersController(ISummonersService summonersService)
         {
             _summonersService = summonersService;
         }
